@@ -9,6 +9,10 @@
       "path": "./backend"
     },
     {
+      "name": "📦 TypeSpec",
+      "path": "./tsp"
+    },
+    {
       "name": "🌏 Root",
       "path": "./"
     }
