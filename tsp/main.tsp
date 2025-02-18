@@ -1,46 +1,58 @@
 import "@typespec/http";
 
 using TypeSpec.Http;
+
 @service({
-  title: "Widget Service",
+  title: "Todo Service",
 })
 namespace DemoService;
 
-model Widget {
-  id: string;
-  weight: int32;
-  color: "red" | "blue";
-}
-
-model WidgetList {
-  items: Widget[];
-}
-
 @error
 model Error {
-  code: int32;
+  code: int64;
   message: string;
 }
 
-model AnalyzeResult {
-  id: string;
-  analysis: string;
+@format("uuid")
+scalar uuid extends string;
+
+
+model Todo {
+  id: uuid;
+  userId: uuid;
+  title: string;
+  content?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-@route("/widgets")
-@tag("Widgets")
-interface Widgets {
+model TodoList {
+  todos: Todo[];
+  total: int64;
+}
+
+model CreateTodo {
+  title: string;
+  content?: string;
+}
+
+model UpdateTodo {
+  title: string;
+  content?: string;
+}
+
+@route("/todos")
+@tag("Todos")
+interface Todos {
   /** List widgets */
-  @get list(): WidgetList | Error;
+  @get list(): TodoList | Error;
   /** Read widgets */
-  @get read(@path id: string): Widget | Error;
+  @get read(@path id: string): Todo | Error;
   /** Create a widget */
-  @post create(@body body: Widget): Widget | Error;
+  @post create(@body body: CreateTodo): Todo | Error;
   /** Update a widget */
-  @patch update(@path id: string, @body body: Widget): Widget | Error;
+  @patch update(@path id: string, @body body: UpdateTodo): Todo | Error;
   /** Delete a widget */
   @delete delete(@path id: string): void | Error;
 
-  /** Analyze a widget */
-  @route("{id}/analyze") @post analyze(@path id: string): AnalyzeResult | Error;
 }
